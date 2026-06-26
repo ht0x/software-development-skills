@@ -22,6 +22,32 @@ A curated plugin bundling skills for software development teams — from technic
 
 Each skill can be triggered by its slash command (e.g., `/software-design-doc`) or by natural language phrases listed in the table above. Skills scale their output to the complexity of your task.
 
-## Setup
+## Installation
+
+### As a Claude Code plugin (recommended)
+
+```bash
+/plugin marketplace add ht0x/software-development-skills
+/plugin install software-development-team-90@software-development-team-90
+```
+
+Skills are then available under the plugin namespace, e.g.:
+
+```bash
+/software-development-team-90:task-template
+/software-development-team-90:software-design-doc
+```
+
+### Standalone (any Agent Skills tool)
+
+Copy individual skill folders into your `.claude/skills/` directory:
+
+```bash
+cp -r skills/task-template ~/.claude/skills/
+```
+
+Each folder is self-contained and works in any agent that follows the Agent Skills spec.
+
+## Requirements
 
 No environment variables or external services required. All skills work out of the box.
