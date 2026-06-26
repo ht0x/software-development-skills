@@ -1,0 +1,13 @@
+{
+  "name": "software-development-team-90",
+  "version": "0.1.0",
+  "description": "A curated set of skills for software development teams — covering technical documentation, design docs, task specs, RFC/ADR authoring, spec-driven development, algorithmic art, and learning systems.",
+  "author": {
+    "name": "ht0x",
+    "url": "https://github.com/ht0x"
+  },
+  "homepage": "https://github.com/ht0x/software-development-skills",
+  "repository": "https://github.com/ht0x/software-development-skills",
+  "license": "MIT",
+  "keywords": ["software-engineering", "documentation", "design-doc", "adr", "rfc", "task-management", "spec-driven", "learning"]
+}
