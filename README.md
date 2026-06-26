@@ -11,6 +11,7 @@ A curated plugin bundling skills for software development teams — from technic
 | `build-to-learn-systems` | `/build-to-learn-systems`, "I want to learn X by building it" | Author phase-by-phase engineering course documents |
 | `convert-documents-to-skill` | `/convert-documents-to-skill` | Convert any document into a ready-to-install Claude skill |
 | `learn-new-skill` | "teach me X", "explain X", "ELI5", "walk me through" | Structured learning sessions for concepts and techniques |
+| `mini-spec` | `/mini-spec` | Guided module work plan — goal, scope, constraints, agent tasks, done criteria; outputs as Markdown or Word in English or Vietnamese |
 | `request-for-comments-doc` | `/request-for-comments-doc`, "write an RFC for X" | Propose significant changes and gather team feedback |
 | `software-design-doc` | `/software-design-doc`, "create a design doc for X" | Design documents for cross-functional alignment before coding |
 | `software-requirement-specification-doc` | `/software-requirement-specification-doc`, "create an SRS for X" | Nail down requirements before design or implementation |
