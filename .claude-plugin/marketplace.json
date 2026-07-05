@@ -11,6 +11,7 @@
       "source": "./",
       "description": "Full skill suite for software development teams",
       "author": { "name": "ht0x" },
+      "category": "software-development-team90",
       "keywords": ["software-engineering", "documentation", "design-doc", "adr", "rfc", "task-management"]
     }
   ]
