@@ -12,6 +12,7 @@ description: >-
   its alternatives and trade-offs captured. Not needed for routine
   implementation choices that don't need long-term justification — propose
   a quick note instead.
+disable-model-invocation: true
 ---
 
 # /architecture-decision-record-doc

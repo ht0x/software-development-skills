@@ -13,6 +13,7 @@ description: >-
   context (feature name, Unity version, render pipeline, target platforms,
   audience), asks for output format (Markdown or Word .docx), then
   generates immediately. 
+disable-model-invocation: true
 ---
 
 # /unity-software-design-doc

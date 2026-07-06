@@ -11,6 +11,7 @@ description: >-
   with explicit scope, requirements, and a definition of done. Scales from
   a short checklist for small fixes to a full multi-section document for
   large or risky work.
+disable-model-invocation: true
 ---
 
 # /task-template

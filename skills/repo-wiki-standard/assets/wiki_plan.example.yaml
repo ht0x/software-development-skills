@@ -1,0 +1,40 @@
+# Repo Wiki plan — copy to <output>/wiki_plan.yaml and edit.
+# After changing this file, (re)generate the wiki for changes to take effect.
+
+version: 1
+
+wiki:
+  # Output directory for the wiki. User's choice; defaults to docs/wiki.
+  output: "docs/wiki"
+
+  # architecture | product_requirement | onboarding
+  template: "architecture"
+
+  # Output language trees. Any languages you choose, by short code (e.g. en, ja, fr).
+  # Defaults to English.
+  languages: ["en"]
+
+  # Guidance that shapes tone, audience, and focus of every page.
+  notes:
+    - text: "Audience is engineers new to this codebase. Prefer clear explanations of how things fit together over exhaustive API detail."
+      author: ""
+
+  # OPTIONAL strict page allowlist. Leave empty to use the template's default
+  # page set. If you list pages here, ONLY these are generated.
+  documents: []
+    # - title: "Architecture Overview"
+    #   goal: "System-wide structure and how major modules interact."
+    #   parent: ""
+    #   hints: "Include a component diagram and a module dependency graph."
+
+# Which files generation may read and cite (.gitignore syntax).
+scope:
+  include: []          # empty = all tracked files
+  exclude:
+    - "node_modules/**"
+    - "dist/**"
+    - "build/**"
+    - "vendor/**"
+    - "**/*.min.js"
+    - "**/__tests__/**"
+    - "**/*.snap"

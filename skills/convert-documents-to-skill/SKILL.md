@@ -9,6 +9,7 @@ description: >-
   plan with frontmatter, workflow phases, and quality checklist, asks for
   confirmation before generating, then produces the final SKILL.md. Never
   proceeds to generation without explicit user confirmation of the plan.
+disable-model-invocation: true
 ---
 
 # /convert-documents-to-skill

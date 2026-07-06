@@ -10,6 +10,7 @@ description: >-
   Asks for output format (Markdown or Word) before generating. Works across domains: 
   web, backend, game, mobile, desktop. Fills each section from context and marks 
   genuinely unknown fields with TODO rather than inventing placeholder facts.
+disable-model-invocation: true
 ---
 
 # /software-design-doc

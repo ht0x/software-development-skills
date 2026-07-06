@@ -11,6 +11,7 @@ description: >-
   implementation of...", "document how this task was implemented", or
   whenever a medium or large task needs its implementation history captured.
   Not needed for small tasks unless explicitly requested.
+disable-model-invocation: true
 ---
 
 # /task-process-report-doc

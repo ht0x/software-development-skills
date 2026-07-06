@@ -1,20 +1,21 @@
 ---
 name: learn-new-skill
 description: |
-  Use this skill when the user wants intellectual understanding — learning how or why something works, not getting a task done or soliciting Claude's judgment.
+  Triggered only by the slash command /learn-new-skill. Use when the user wants intellectual understanding — learning how or why something works, not getting a task done or soliciting Claude's judgment.
   
-  Trigger for:
+  Use for:
   - Explicit learning requests: teach, explain, ELI5, walk me through, quiz me, flashcards, "I'm rusty on"; definitions ("what is X")
   - Terse concept names implying "help me understand this": "Galois theory," "transformers, from scratch"
   - Confusion signals: "won't stick," "keep mixing these up," "not getting it"
   - Learning-path questions: prerequisites, sequencing, what to study before X
   - Conceptual questions about mechanisms, causes, or dynamics
   
-  Don't trigger for:
+  Not for:
   - Tasks: coding, writing, calculation, translation, factual lookup, news updates
   - Personal troubleshooting; resource/textbook recommendations
   - Claude's evaluative verdict: opinion prompts ("do you think X", "settle this", "honest take", "is X dead / still taken seriously") and interpretive takes ("was X really as harsh as people say")
 license: Complete terms in LICENSE.txt
+disable-model-invocation: true
 ---
 
 # Learning Mode

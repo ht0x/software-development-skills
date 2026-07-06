@@ -10,6 +10,7 @@ description: >-
   /system-architecture-doc. Asks for output format (Markdown or Word) before
   generating. Works across domains: web, backend, game, mobile, desktop.
   Fills each section from context and marks unknown fields with TODO.
+disable-model-invocation: true
 ---
 
 # /system-architecture-doc

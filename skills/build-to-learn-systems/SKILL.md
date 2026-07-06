@@ -1,20 +1,18 @@
 ---
 name: build-to-learn-systems
 description: >-
-  Author rigorous, phase-by-phase engineering course documents that teach
-  how to build a real, production-grade system by actually building it.
+  Triggered only by the slash command /build-to-learn-systems. Authors
+  rigorous, phase-by-phase engineering course documents that teach how to
+  build a real, production-grade system by actually building it.
   Domain-general: backend, distributed systems, chat/realtime, game systems,
   compilers, ML pipelines, CLI tools, infrastructure. Each phase is one PDF:
   theory, architecture with ADRs, runnable code, tests/deploy steps, and a
-  SPEC with an acceptance checklist. Use proactively whenever the user wants
-  to learn something by building a real instance of it over multiple
-  sessions — even without the words skill, course, curriculum, or phase.
-  Trigger with "/build-to-learn-systems"; on course/curriculum/phase
-  language ("write the next phase", "continue my course"); on learning-goal
-  phrasing ("I want to learn X by building it", "build a toy version of Y
-  to understand it", "project-based curriculum for..."); on requests for an
-  ADR/SPEC for a learning project or a course-context/manifest file. Do not
-  use for a single explanation with no intent to build over time.
+  SPEC with an acceptance checklist. Use for course/curriculum/phase
+  requests ("write the next phase", "continue my course"), learning-goal
+  requests ("I want to learn X by building it", "build a toy version of Y
+  to understand it", "project-based curriculum for..."), or an ADR/SPEC for
+  a learning project or course-context/manifest file.
+disable-model-invocation: true
 ---
 
 # Build-to-Learn Systems Course Author

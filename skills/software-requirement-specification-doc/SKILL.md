@@ -11,6 +11,7 @@ description: >-
   "create an SRS for X", "write requirements for this system", "I need a
   requirements spec for...", or whenever requirements for a module, service,
   or system need to be nailed down before design work starts.
+disable-model-invocation: true
 ---
 
 # /software-requirement-specification-doc

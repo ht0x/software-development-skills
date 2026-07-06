@@ -13,6 +13,7 @@ description: >-
   or whenever requirements/design need to become trackable, testable
   implementation work. Not needed for small tasks like a narrow bug fix or
   documentation-only update — propose a shorter checklist instead.
+disable-model-invocation: true
 ---
 
 # /spec-driven-development-doc

@@ -12,6 +12,7 @@ description: >-
   Not needed for decisions that are already settled (use
   architecture-decision-record-doc instead) or for small, uncontroversial
   changes.
+disable-model-invocation: true
 ---
 
 # /request-for-comments-doc

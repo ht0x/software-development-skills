@@ -7,6 +7,7 @@ description: >-
   Triggered only by the slash command /generate-mermaid-diagram. Asks whether
   to output inline in chat or save to a .md file. Works from attached code
   files or from a description — no domain restriction.
+disable-model-invocation: true
 ---
 
 # /generate-mermaid-diagram
