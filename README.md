@@ -10,9 +10,13 @@ A curated plugin bundling skills for software development teams — from technic
 | `architecture-decision-record-doc` | `/architecture-decision-record-doc`, "create an ADR for X" | Document long-term technical decisions and trade-offs |
 | `build-to-learn-systems` | `/build-to-learn-systems`, "I want to learn X by building it" | Author phase-by-phase engineering course documents |
 | `convert-documents-to-skill` | `/convert-documents-to-skill` | Convert any document into a ready-to-install Claude skill |
+| `convert-skills-into-plugin` | `/convert-skills-into-plugin` | Convert existing SKILL.md file(s) into an installable Claude Code / Cowork plugin |
 | `generate-mermaid-diagram` | `/generate-mermaid-diagram` | Generate valid Mermaid diagrams (flowchart, sequence, class, ER, graph, state) from code or a description |
 | `learn-new-skill` | "teach me X", "explain X", "ELI5", "walk me through" | Structured learning sessions for concepts and techniques |
+| `marketplace-plugin-scaffolder` | `/marketplace-plugin-scaffolder` | Scaffold a new Claude Code / Cowork marketplace plugin project from a set of skills |
 | `mini-spec` | `/mini-spec` | Guided module work plan — goal, scope, constraints, agent tasks, done criteria; outputs as Markdown or Word in English or Vietnamese |
+| `repo-wiki-light` | `/repo-wiki-light` | Generate a lightweight architecture wiki (README, architecture, data-flow, decisions, module pages) for any repo |
+| `repo-wiki-standard` | `/repo-wiki-standard` | Generate a full config-driven repo wiki (wiki_plan.yaml, templates, Mermaid diagrams) with incremental updates |
 | `request-for-comments-doc` | `/request-for-comments-doc`, "write an RFC for X" | Propose significant changes and gather team feedback |
 | `software-design-doc` | `/software-design-doc`, "create a design doc for X" | Design documents for cross-functional alignment before coding |
 | `software-requirement-specification-doc` | `/software-requirement-specification-doc`, "create an SRS for X" | Nail down requirements before design or implementation |
