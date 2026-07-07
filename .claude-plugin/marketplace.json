@@ -1,5 +1,5 @@
 {
-  "name": "software-development-team-90",
+  "name": "software-development-ht0x",
   "owner": {
     "name": "ht0x",
     "url": "https://github.com/ht0x"
@@ -7,11 +7,11 @@
   "description": "A curated set of skills for software development teams - docs, design docs, task specs, RFC/ADR authoring, spec-driven dev, and learning systems.",
   "plugins": [
     {
-      "name": "software-development-team-90",
+      "name": "software-development-ht0x",
       "source": "./",
       "description": "Full skill suite for software development teams",
       "author": { "name": "ht0x" },
-      "category": "software-development-team90",
+      "category": "software-development-ht0x",
       "keywords": ["software-engineering", "documentation", "design-doc", "adr", "rfc", "task-management"]
     }
   ]

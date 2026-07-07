@@ -36,14 +36,14 @@ Each skill can be triggered by its slash command (e.g., `/software-design-doc`) 
 
 ```bash
 /plugin marketplace add ht0x/software-development-skills
-/plugin install software-development-team-90@software-development-team-90
+/plugin install software-development-ht0x@software-development-ht0x
 ```
 
 Skills are then available under the plugin namespace, e.g.:
 
 ```bash
-/software-development-team-90:task-template
-/software-development-team-90:software-design-doc
+/software-development-ht0x:task-template
+/software-development-ht0x:software-design-doc
 ```
 
 ### Standalone (any Agent Skills tool)
