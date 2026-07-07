@@ -7,8 +7,11 @@ description: >-
   derived directly from the source. Config-driven via a wiki_plan.yaml, supports
   Architecture / Product Requirement / Onboarding templates, Mermaid diagrams,
   any output language, and incremental updates that regenerate only pages whose
-  source changed while protecting hand-edited content. Before creating anything,
-  it asks the user for the output path (default docs/wiki) and the language(s).
+  source changed while protecting hand-edited content. Non-git mode: pass
+  --no-git (or point it at a non-git directory) to generate the wiki one-shot
+  with the living features (change-tracking manifest and incremental re-runs)
+  disabled. Before creating anything, it asks the user for the output path
+  (default docs/wiki) and the language(s).
 ---
 
 # Repo Wiki
@@ -31,8 +34,16 @@ docs without the command, suggest they run `/repo-wiki-standard`.
 - update / sync an existing wiki after code changes
 - (re)configure via `wiki_plan.yaml`
 
-Arguments may include an output path and/or language(s). Any choice not supplied
-is collected in Phase 0 before anything is created.
+Arguments may include an output path, language(s), and/or `--no-git`. Any choice
+not supplied is collected in Phase 0 before anything is created.
+
+**`--no-git` mode.** By default the wiki is a *living* document backed by Git (see
+Manifest below). If the target is not a Git repository — or the user passes
+`--no-git` — the skill runs in a degraded, one-shot mode: it still generates the
+full wiki (pages, diagrams, cross-links) but skips the "living" features that
+depend on Git (no `.wiki_manifest.json`, no incremental stale-page detection).
+Regenerating later in this mode overwrites pages, so protected blocks matter more
+(see Phase 5).
 
 ## Core concepts
 
@@ -93,11 +104,19 @@ choices and confirm rather than re-ask.
 
 ### Phase 1 — Preconditions
 
-1. Confirm the target is a Git repo with at least one commit
-   (`git rev-parse --is-inside-work-tree` and `git rev-parse HEAD`). If not, tell
-   the user the wiki needs a committed Git repo and stop.
-2. If the repo has more than ~10,000 tracked files, tell the user and recommend
-   narrowing `scope.exclude` before proceeding (large trees are slow and noisy).
+1. Determine the Git status of the target and set a `<GIT>` flag:
+   - Run `git rev-parse --is-inside-work-tree` and `git rev-parse HEAD`.
+   - If both succeed, set `<GIT> = true` (living mode; manifest + incremental
+     updates enabled).
+   - If either fails, **or** the user passed `--no-git`, set `<GIT> = false`.
+     Do **not** stop. Tell the user once, plainly: *"No committed Git repo found
+     (or `--no-git` set), so I'll generate the wiki in one-shot mode — the living
+     features (change-tracking manifest and incremental re-runs) are disabled.
+     Re-running will overwrite pages; wrap anything you hand-edit in protected
+     blocks."* Then continue.
+2. If the tree has more than ~10,000 files, tell the user and recommend narrowing
+   `scope.exclude` before proceeding (large trees are slow and noisy). When
+   `<GIT>` is false, count files under `scope.include` rather than tracked files.
 
 ### Phase 2 — Load or create the plan
 
@@ -177,14 +196,24 @@ languages.
 
 ### Phase 6 — Write the manifest
 
-Update `<WIKI>/.wiki_manifest.json` recording, for each page: its path, the
-template used, the language, and the list of source files it was built from with
-their current content hashes (e.g. `git hash-object`). This enables Phase 7.
-Schema and hashing details are in `references/incremental-update.md`.
+**Skip this phase entirely when `<GIT>` is false** — the manifest depends on Git
+hashing and only powers the incremental re-runs, which are disabled in no-git
+mode. Do not create `.wiki_manifest.json`.
+
+When `<GIT>` is true: update `<WIKI>/.wiki_manifest.json` recording, for each
+page: its path, the template used, the language, and the list of source files it
+was built from with their current content hashes (e.g. `git hash-object`). This
+enables Phase 7. Schema and hashing details are in
+`references/incremental-update.md`.
 
 ### Phase 7 — Incremental update (on later runs)
 
-When the user asks to update/sync an existing wiki:
+**Only available when `<GIT>` is true.** In no-git mode there is no manifest, so
+incremental updates are impossible: a re-run regenerates every page from scratch
+(preserving `<!-- wiki:protected -->` blocks). Warn the user that non-protected
+hand-edits will be overwritten, then regenerate.
+
+When the user asks to update/sync an existing wiki (Git mode):
 
 1. Load `.wiki_manifest.json`.
 2. Recompute hashes for each recorded source file. A page is **stale** if any of
@@ -200,9 +229,13 @@ didn't change, do not overwrite it — surface the conflict and ask.
 
 ### Phase 8 — Wrap up
 
-- Summarize what was generated/updated (page count, languages, diagrams).
-- Remind the user they can commit `<WIKI>/` to share the wiki via Git, and can
-  refine `wiki_plan.yaml` then re-run to steer future generations.
+- Summarize what was generated/updated (page count, languages, diagrams). When
+  `<GIT>` is false, note that this was a one-shot generation with living features
+  disabled.
+- If `<GIT>` is true, remind the user they can commit `<WIKI>/` to share the wiki
+  via Git, and can refine `wiki_plan.yaml` then re-run for incremental updates.
+  If `<GIT>` is false, mention that initializing Git and re-running would unlock
+  the living/incremental features.
 
 ## Reference files
 
