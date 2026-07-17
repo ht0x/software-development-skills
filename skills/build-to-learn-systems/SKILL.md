@@ -4,10 +4,13 @@ description: >-
   Triggered only by the slash command /build-to-learn-systems. Authors
   rigorous, phase-by-phase engineering course documents that teach how to
   build a real, production-grade system by actually building it.
-  Domain-general: backend, distributed systems, chat/realtime, game systems,
-  compilers, ML pipelines, CLI tools, infrastructure. Each phase is one PDF:
-  theory, architecture with ADRs, runnable code, tests/deploy steps, and a
-  SPEC with an acceptance checklist. Use for course/curriculum/phase
+  Domain-general — works for any buildable system: game clients (Unity,
+  Godot), game servers, web (React, Vue, Next.js, Nuxt, Three.js/WebGL),
+  backend and distributed systems, chat/realtime, compilers, databases, CLI
+  tools, ML pipelines, infrastructure. Starts with a full Roadmap document (the whole
+  phase plan, approved before any phase is written); then each phase is one
+  PDF: theory, architecture with ADRs, runnable code, tests/deploy steps,
+  and a SPEC with an acceptance checklist. Use for course/curriculum/phase
   requests ("write the next phase", "continue my course"), learning-goal
   requests ("I want to learn X by building it", "build a toy version of Y
   to understand it", "project-based curriculum for..."), or an ADR/SPEC for
@@ -27,9 +30,40 @@ The guiding pedagogy is: **learn what → build it → run it → understand why
 learner should never copy code they don't understand; every phase ends with
 something that actually runs and a checklist proving it.
 
-This skill is domain-general (use it for any backend / realtime / distributed /
-infrastructure system), but it carries a fully worked example: a chat + realtime
-voice system for a game. See `references/example-evergreen-context.md`.
+## Domain scope — this skill is genuinely domain-general
+
+Use it for **any** system a developer can build and learn from, not just server-side
+work. The phase/ADR/SPEC/PDF machinery is domain-neutral; only the *content* changes:
+
+| Domain | Example courses |
+|--------|-----------------|
+| **Game client** | A 3D game in Unity/Godot/Bevy; a physics sandbox; a voxel engine |
+| **Game server** | Authoritative multiplayer server; matchmaking; state sync |
+| **Web — SPA** | A React or Vue app; a design-system library |
+| **Web — meta-framework** | A Next.js or Nuxt app — **full-stack**: server rendering, server actions, caching |
+| **Web — creative/3D** | A Three.js/WebGL scene — has a render loop, closer to a game |
+| **Backend / distributed** | Chat + voice; an API platform; a job queue; a cache |
+| **Systems / tooling** | A compiler; a CLI; a database; an interpreter |
+| **Data / ML** | A training pipeline; a feature store; a RAG system |
+
+Two worked examples ship with the skill — read the one closest to the user's domain:
+
+- `references/example-evergreen-context.md` — a **backend** course (chat + realtime
+  voice for a game).
+- `references/example-game-context.md` — a **game-client** course (rebuilding a 3D
+  geography game in Unity), showing how the same structure adapts to a non-server
+  domain.
+
+**Adapt the vocabulary, keep the spine.** Every domain has an equivalent of each
+structural element; do not force server metaphors onto a game or web course. See
+`references/domain-playbooks.md` for a short playbook per domain (what an ADR, a
+milestone, a "break it" test, and the hands-on loop look like in each).
+
+<!-- Anti-pattern: writing "Docker/migrations/brokers" sections into a Unity course
+     because the example course had them. Translate, don't transplant. -->
+
+**Deny-list is per-course, not per-domain.** The skill never assumes a stack; the
+interview establishes it.
 
 ## Core operating rules (read before doing anything)
 
@@ -68,29 +102,105 @@ voice system for a game. See `references/example-evergreen-context.md`.
    All subsequent phases use that language automatically — never ask again unless the
    user explicitly requests a change. This SKILL.md is always in English regardless.
 
+6. **Choose the depth level once, record it, reuse it.** Alongside the language ask:
+
+   > "How deep should each phase document go?"
+   > 1. **Standard** — theory, ADRs, hands-on, SPEC. ~1000+ lines / ~20 pages per phase.
+   > 2. **Deep** — everything in Standard plus a terminology glossary, a
+   >    problem→solutions→comparison table for each technical decision, jargon
+   >    defined on first use, line-by-line code dissection, and a common-mistakes
+   >    section. ~2000–2500 lines / ~40–55 pages per phase.
+
+   Recommend **Deep** when the learner is new to the domain or the system is complex;
+   recommend **Standard** when they are experienced or want to move fast. Record the
+   answer in the manifest §E. See `references/authoring-conventions.md` for exactly
+   what each level requires. Never ask again unless the user asks to change it.
+
+7. **The roadmap document comes before Phase 0.** Never write Phase 0 until the
+   learner has seen and approved a full **Roadmap document** (see below). It is the
+   cheapest possible moment to catch a wrong phase order, a missing capability, or a
+   mis-scoped course.
+
+## The Roadmap document (written first, approved before Phase 0)
+
+The course opens with its own deliverable: a **Roadmap** PDF that maps the whole
+journey. It is not a table in chat — it is a real document the learner reads, keeps,
+and returns to. Build it with the same pipeline as a phase.
+
+**Why it exists (rationale, not ceremony).** A 15-phase course is a large commitment
+built on assumptions: that the phase order matches real dependencies, that nothing is
+missing, that the scope fits the learner. The Roadmap surfaces all of that *before*
+thousands of lines are written. A wrong assumption caught here costs one conversation;
+caught at Phase 8 it costs a rewrite of the whole back half.
+
+It must answer exactly four questions, in this order:
+
+1. **What am I building?** — the system in plain language, the whole-system picture
+   (Mermaid), the big organising idea, and a table of every subsystem → which phase
+   builds it.
+2. **In what order, and why that order?** — the **learning arc** (group phases into
+   3–5 named stages with a "personality" each) and a **phase dependency graph**
+   (Mermaid) showing which phase needs which. Call out the roots and the bottlenecks.
+3. **What does each phase teach me?** — one entry per phase, all with the same shape:
+   central question · objectives · new concepts · **terminology to be learned** ·
+   deliverable (with a concrete "milestone" the learner can see working) ·
+   dependencies · difficulty (★☆☆☆☆–★★★★★) · time estimate · reference source (when
+   rebuilding an existing system).
+4. **Where am I on the journey?** — a progress-tracking table the learner fills in,
+   plus study advice (how to work a phase, what to do when stuck).
+
+Use `assets/roadmap-template.md` as the skeleton and **read
+`references/roadmap-doc.md` before writing it** — it covers how to derive the stages,
+build the dependency graph, calibrate the difficulty scale, and estimate time
+honestly.
+
+> **Label every time estimate as an estimate**, not a fact, and say so in the
+> document. Learners measure themselves against these numbers; an unlabelled guess
+> becomes a source of shame when they run 3× over.
+
+**Workflow:** interview → write Roadmap → build PDF → deliver → **wait for approval
+or adjustments** → only then pre-flight Phase 0. If the learner changes the phase
+list, update the Roadmap document *and* the manifest before continuing.
+
 ## Per-phase document structure
 
 Every phase document follows the same rhythm. Use these sections in order:
 
+Sections marked **[Deep]** are required only at the Deep depth level (Core rule 6);
+everything else is required at both levels.
+
 1. **Cover** — course title, phase number/name, one-line subtitle, "Document N / total".
 2. **Objectives** — what the learner will understand and be able to do by the end.
-3. **Theory** — the concepts needed before writing a line of code, explained for a
+3. **[Deep] Terminology glossary** — every new term this phase uses, before it is
+   used: English name → learner's-language name → literal meaning → everyday analogy
+   → where it appears in this project. The learner should never hit an undefined term.
+4. **Theory** — the concepts needed before writing a line of code, explained for a
    newcomer, with everyday analogies. Define vocabulary; forward-reference where a
    term is covered in depth later.
-4. **Architecture & decisions** — system/data diagrams (Mermaid) plus **ADRs**
+5. **[Deep] Problem & solutions** — for each technical decision: state the *problem*
+   → list *every plausible solution* → a *comparison table* (pros / cons /
+   complexity / performance) → the pick and why. Never hand over a bare answer.
+6. **Architecture & decisions** — system/data diagrams (Mermaid) plus **ADRs**
    (Architecture Decision Records) for each significant choice.
-5. **Hands-on** — concrete, runnable code with per-part explanation. Prefer a fast
+7. **Hands-on** — concrete, runnable code with per-part explanation. Prefer a fast
    dev loop (run locally) before the production-shaped packaging.
-6. **Test & Deploy** — how to verify the feature actually works.
-7. **SPEC & acceptance checklist** — functional + non-functional requirements and a
-   tick-box checklist the learner uses to self-certify "this phase is done",
-   including at least one deliberate "break it and watch it fail" test.
-8. **Summary & next-phase preview** — what was achieved; what the next phase builds;
-   the explicit "tell me 'done with Phase N'" handoff.
+   **[Deep]** each code block gets (a) dense inline comments and (b) a dissection
+   below it walking line-by-line / block-by-block: syntax, intent, pitfalls, and why
+   it is written this way rather than the obvious alternative. Every hands-on step
+   states *why*, not just *what to press*.
+8. **[Deep] Common mistakes** — the errors beginners actually make on this topic, how
+   to recognise each (the exact symptom/error text), and how to fix it.
+9. **Test & Deploy** — how to verify the feature actually works.
+10. **SPEC & acceptance checklist** — functional + non-functional requirements and a
+    tick-box checklist the learner uses to self-certify "this phase is done",
+    including at least one deliberate "break it and watch it fail" test.
+11. **Summary & next-phase preview** — what was achieved; what the next phase builds;
+    the explicit "tell me 'done with Phase N'" handoff.
 
-Target length: **~1000+ source lines per phase.** Depth over brevity. If a phase
-would exceed that and cover several distinct features, propose splitting it into
-two phases and ask the user before doing so.
+Target length: **Standard ≈ 1000+ source lines; Deep ≈ 2000–2500** (~40–55 PDF
+pages). Depth over brevity at both levels. If a phase would exceed its target *and*
+covers several distinct features, propose splitting it into Phase N-a / N-b and ask
+— **split, never trim the explanation** to hit a length.
 
 ## Authoring conventions
 
@@ -119,10 +229,16 @@ that will otherwise bite you: pointing the Mermaid CLI at a working Chromium, an
 heredoc byte-corruption trap with Vietnamese text — write Markdown via a file-create
 tool, not shell heredocs).
 
+This applies to **every** course document — the Roadmap and each phase alike.
+
 Quick usage once the environment is set up:
 
 ```bash
-python3 scripts/build_pdf.py <phase.md> <out.pdf> "Footer title text"
+# Roadmap
+python3 scripts/build_pdf.py roadmap.md roadmap.pdf "<Course> · Roadmap"
+
+# A phase
+python3 scripts/build_pdf.py phaseN.md phaseN.pdf "<Course> · Phase N — <title>"
 ```
 
 After building, render a few pages to images and visually inspect them (diagrams,
@@ -134,13 +250,16 @@ block rendered (no error placeholder in the generated HTML).
 This single Markdown file is the course's externalized memory and the antidote to
 context-window loss across many sessions. Keep it dense. It should contain:
 
-- **Project context** — what is being built, constraints (scale, budget, timeline),
-  the "build from scratch" allow/deny list, output language, the fact-vs-inference rule.
+- **Project context** — what is being built, its **domain** (which playbook applies),
+  constraints (scale, budget, timeline), the "build from scratch" allow/deny list,
+  **output language**, **depth level** (Standard / Deep), the fact-vs-inference rule.
 - **Target scale** — the numbers that constrain design.
 - **Tech stack** — locked choices.
-- **Roadmap** — the full phase list with status (done / pending).
-- **Authoring conventions** — output format, callouts, ADR/SPEC, length, one-phase
-  workflow.
+- **Roadmap** — the full phase list with status (done / pending), plus a **pointer to
+  the Roadmap document** (`docs/phases/roadmap.pdf`). If the phase list here and the
+  Roadmap document ever disagree, stop and reconcile them before writing.
+- **Authoring conventions** — output format, callouts, ADR/SPEC, depth level and its
+  required sections, length target, one-phase workflow.
 - **Canonical names book** — repo name, service names, ports, project names,
   endpoints, connection conventions, data ownership, any cross-service contracts
   (e.g. a JWT contract). Later phases must not contradict this.
@@ -150,10 +269,11 @@ context-window loss across many sessions. Keep it dense. It should contain:
   cross-cutting features land.
 - **Source of truth** — where the real artifacts live (the delivered PDFs + the repo).
 
-Use `assets/course-context-template.md` as the blank skeleton, and
-`references/example-evergreen-context.md` as a filled, real example. After each
-phase, hand the user an updated version (bump v1 → v2 → …) and tell them to use the
-newest one.
+Use `assets/course-context-template.md` as the blank skeleton, and whichever filled
+example matches the domain — `references/example-evergreen-context.md` (backend) or
+`references/example-game-context.md` (game client) — as a real, worked reference.
+After each phase, hand the user an updated version (bump v1 → v2 → …) and tell them
+to use the newest one.
 
 ## Phase review & feedback loop (before writing Phase N+1)
 
@@ -330,26 +450,40 @@ generated Markdown file, flagged for the learner to review in the PR.
 
 ---
 
-## Starting a brand-new course (Phase 0)
+## Starting a brand-new course (Roadmap, then Phase 0)
 
 When the user wants to start a new build-to-learn course from scratch:
 
-1. Ask the document language (Core rule 5) — do this first, before anything else.
-2. Interview for: the system to build, the learner's starting level, hard
+1. **Ask the document language and depth level** (Core rules 5 and 6) — do this
+   first, before anything else.
+2. **Interview** for: the system to build, its domain (game client / game server /
+   web / backend / tooling / data — pick the matching playbook in
+   `references/domain-playbooks.md`), the learner's starting level, and hard
    constraints (scale, budget, timeline, allowed/forbidden tech).
-3. Propose a full phase roadmap as a table (phase number, name, one-line
-   description). Ask: "Does this look right? Should any phase be split, merged, or
-   reordered? Are there capabilities missing?" Wait for confirmation.
-4. Run the **pre-flight review** for Phase 0 (see above). Wait for confirmation.
-5. Write Phase 0: dev environment, foundational vocabulary, first ADRs, running
-   health-check milestone.
-6. Create the course-context file (v1) — include the chosen document language.
-7. Deliver Phase 0 PDF + manifest v1, then wait.
+   - If the course rebuilds an **existing** system, ask where the reference source
+     lives and read it. Ground every phase in that real code, not in memory.
+3. **Sketch the phase list** as a table (number, name, one-line description) and get
+   a quick reaction: "Does this look right? Should any phase be split, merged, or
+   reordered? Are there capabilities missing?" This is a cheap sanity check before
+   investing in the full document.
+4. **Write the Roadmap document** (see "The Roadmap document" above), build its PDF,
+   inspect it, and deliver it. **Wait for approval or adjustments.** Do not skip to
+   Phase 0 — the learner needs to see the whole journey before committing to it.
+5. Run the **pre-flight review** for Phase 0 (see above). Wait for confirmation.
+6. **Write Phase 0**: dev environment, foundational vocabulary, first ADRs, and a
+   running milestone the learner can see working (for a game: something rendered and
+   moving; for a service: a health endpoint answering; for a web app: a component
+   rendering with hot-reload).
+7. Create the course-context file (v1) — include the chosen language, depth level,
+   domain, and a pointer to the Roadmap document.
+8. Deliver Phase 0 PDF + manifest v1, then wait for "done with Phase 0".
 
 ## Continuing an existing course (Phase N+1)
 
-1. Read the course-context file the user provides. Confirm the document language is
-   recorded in the manifest; if not, ask now (see Core rule 5).
+1. Read the course-context file the user provides. Confirm the document language and
+   depth level are recorded in the manifest; if not, ask now (Core rules 5 and 6).
+   Check the Roadmap document exists and still matches the phase list — if the course
+   has drifted from it, say so and offer to update the Roadmap first.
 2. Run the **phase review & feedback loop** for Phase N (see above). Wait for the
    learner to say "continue" before proceeding.
 3. Run the **pre-flight review** for Phase N+1 (see above). Wait for confirmation
@@ -375,7 +509,9 @@ docs/
   tools/
     build_pdf.py          ← the PDF rendering engine (from this skill)
     BUILD.md              ← environment setup instructions (from this skill)
-  phases/                 ← one .md + one .pdf per phase
+  phases/
+    roadmap.md / .pdf     ← the Roadmap document (written first, before Phase 0)
+    phaseN.md / .pdf      ← one .md + one .pdf per phase
   adr/                    ← ADR files (0001-…md, 0002-…md …)
 Course-Context_<name>.md  ← the course-context/manifest file (kept at repo root)
 ```
@@ -438,12 +574,54 @@ Use **Claude Code** for: writing the phase document, rendering the PDF, updating
 manifest, committing to the repo. This keeps long document generation out of the
 chat context window.
 
-## Quality bar before delivering any phase
+## Bundled files
+
+**References — read the relevant one before writing:**
+
+| File | Read it when |
+|------|--------------|
+| `references/roadmap-doc.md` | Writing the Roadmap document (stages, dependency graph, difficulty scale, estimates) |
+| `references/domain-playbooks.md` | Starting any course — find the playbook for the learner's domain |
+| `references/authoring-conventions.md` | Writing any document (callouts, ADR/SPEC templates, both depth levels) |
+| `references/pdf-pipeline.md` | Setting up or debugging the PDF build |
+| `references/example-evergreen-context.md` | A **backend** course — filled manifest example |
+| `references/example-game-context.md` | A **game / client-side** course — filled manifest example |
+
+**Assets — copy and fill:**
+
+| File | Purpose |
+|------|---------|
+| `assets/roadmap-template.md` | Blank Roadmap skeleton (the four questions) |
+| `assets/phase-template.md` | Blank phase skeleton |
+| `assets/course-context-template.md` | Blank manifest skeleton |
+| `assets/BUILD.md` | Pipeline install instructions (macOS / Windows / Ubuntu) |
+
+**Script:** `scripts/build_pdf.py` — the Markdown+Mermaid → PDF engine.
+
+## Quality bar before delivering any document
+
+**Roadmap document:**
+
+- All four questions answered, in order (what / why this order / each phase / where am I).
+- Whole-system diagram and phase dependency graph both render.
+- Every phase entry has the full shape, including terminology and a concrete milestone.
+- Every time estimate is explicitly labelled an estimate.
+- Nothing contradicts the domain: no server metaphors in a game course, etc.
+
+**Phase document:**
 
 - The hands-on code is internally consistent and would actually run.
-- No name/port/schema/endpoint contradicts the manifest or earlier phases.
+- No name/port/schema/endpoint contradicts the manifest, the Roadmap, or earlier phases.
 - Every significant decision has an ADR; the phase ends with a SPEC + checklist.
 - Fact vs inference is visibly separated.
+- At the Deep level: glossary present, every jargon term defined on first use, each
+  decision has a solutions-comparison table, every code block dissected, common
+  mistakes section present.
 - All diagrams rendered; accented characters and code highlighting look correct in
   the PDF.
 - The manifest has been updated to reflect the new phase.
+
+> The single most common failure is **continuity drift** — a later phase inventing a
+> name, port, or file that contradicts what exists. Re-read the manifest's canonical
+> names book before writing, every time. When unsure of a detail, read the repo or
+> ask; never guess.
