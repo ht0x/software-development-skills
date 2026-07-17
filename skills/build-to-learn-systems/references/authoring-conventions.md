@@ -4,6 +4,60 @@ This file holds the exact formatting and structural conventions for course phase
 documents. Keep them consistent across every phase — consistency is what makes a
 long multi-document course feel like one coherent book.
 
+For the **Roadmap** document specifically, see `references/roadmap-doc.md`. The
+callout, diagram, and cover conventions below apply to it too.
+
+## Depth levels (Standard vs Deep)
+
+The learner picks a depth level when the course starts (Core rule 6); it's recorded
+in the manifest §E and applies to every phase. Never mix levels mid-course.
+
+| | **Standard** | **Deep** |
+|---|---|---|
+| Target length | ~1000+ lines (~20 pages) | ~2000–2500 lines (~40–55 pages) |
+| Glossary section | — | **Required** |
+| Problem→solutions→comparison | ADR tables only | **Required for every technical decision** |
+| Jargon | Define the important ones | **Every term, on first use** |
+| Code | Inline comments + per-part explanation | **+ line-by-line dissection below each block** |
+| Hands-on steps | What to do | **+ why, for every step** |
+| Common-mistakes section | — | **Required** |
+
+Recommend **Deep** for learners new to the domain or complex systems; **Standard**
+for experienced learners who want speed.
+
+### What each Deep-only section must contain
+
+**Terminology glossary** (top of the phase, before Theory). Every new term the phase
+uses, in a table or definition list:
+
+> English name → learner's-language name → literal meaning → everyday analogy →
+> where it shows up in this project.
+
+The rule it enforces: *the learner never meets an undefined term*. If a term appears
+in the phase body and isn't in this glossary or an earlier one, that's a bug.
+
+**Problem & solutions.** For every technical decision, in this order:
+
+1. State the **problem** as a question the learner would ask.
+2. List **every plausible solution** — including the naive one and the one you reject.
+3. A **comparison table**: pros / cons / complexity / performance.
+4. The **pick, and why** — with the fact/inference split visible.
+
+This differs from an ADR: the ADR records the decision for the *project*; this section
+teaches the learner *how to reason* about the choice. A phase can have several of
+these feeding one ADR.
+
+**Code dissection.** Each code block gets:
+
+- (a) **Dense inline comments** in the code itself — what and why.
+- (b) **A dissection below**: walk the block line-by-line or chunk-by-chunk. Cover
+  syntax the learner may not know, the intent, the pitfalls, and — the important one
+  — *why it's written this way rather than the obvious alternative*.
+
+**Common mistakes.** The errors beginners actually make on this topic. Each entry:
+the mistake → **the exact symptom** (the real error text or observed behaviour) → the
+fix. Symptoms matter more than causes; the learner searches by symptom.
+
 ## Fact vs inference (hard requirement)
 
 The learner explicitly wants to know what is an established technical fact versus
@@ -102,8 +156,28 @@ teaching this distinction is itself a goal.
 
 ## Per-phase section order (recap)
 
-Cover → Objectives → Theory → Architecture & ADRs → Hands-on (runnable) →
+**Standard:** Cover → Objectives → Theory → Architecture & ADRs → Hands-on (runnable)
+→ Test & Deploy → SPEC & checklist → Summary & next-phase preview.
+
+**Deep:** Cover → Objectives → **Glossary** → Theory → **Problem & solutions** →
+Architecture & ADRs → Hands-on (**+ dissection**) → **Common mistakes** →
 Test & Deploy → SPEC & checklist → Summary & next-phase preview.
+
+## Markdown gotcha — bold label followed by a list
+
+python-markdown renders a list inline if there's no blank line before it:
+
+```markdown
+**New concepts.**
+- Thing one          ← WRONG: renders as "New concepts. - Thing one"
+
+**New concepts.**
+
+- Thing one          ← RIGHT
+```
+
+This bites constantly in Roadmaps and glossaries. Check a rendered page before
+delivering.
 
 ## Cover page
 

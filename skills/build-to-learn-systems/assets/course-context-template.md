@@ -7,10 +7,18 @@
 
 ## A. Project context
 - What is being built (system, target platform, integration).
+- **Domain** (game client / game server / web frontend / backend / systems / data) —
+  determines which playbook in `references/domain-playbooks.md` applies.
 - Nature: learning-first / real product / both. Team size, timeline, budget.
+- Learner's starting level.
 - "Build from scratch" allow-list and deny-list (what libraries/components are
   allowed; which managed products are forbidden and why).
-- Output language. Fact-vs-inference rule.
+- **Output language** (locked — Core rule 5).
+- **Depth level**: Standard (~1000+ lines/phase) or Deep (~2000–2500 lines/phase,
+  adds glossary + solution comparisons + code dissection + common mistakes).
+- Fact-vs-inference rule.
+- **Reference source** (only if rebuilding an existing system): where the real code
+  lives. Read it; never guess.
 
 ## B. Target scale (design constraints)
 | Metric | MVP | Production |
@@ -26,17 +34,30 @@
 - Datastores, media storage, broker, load balancer, infra/hosting.
 
 ## D. Roadmap (full phase list)
+
+> **Roadmap document:** `docs/phases/roadmap.{md,pdf}` — the approved plan (what's
+> being built, the learning arc, the dependency graph, per-phase detail, progress
+> tracker). If this table and that document ever disagree, **stop and reconcile
+> before writing**.
+
 | # | Name | Status |
 |---|------|--------|
+| — | **Roadmap document** | ✅ DONE / ⏳ |
 | 0 | Foundations & environment | ✅ DONE / ⏳ |
 | 1 | … | ⏳ |
 
 ## E. Authoring conventions (unchanged across phases)
 - Output format (PDF), pipeline summary.
 - Diagrams (Mermaid). Per-phase structure. Target length.
+- **Depth level** (Standard / Deep) and the sections it requires — see
+  `references/authoring-conventions.md`.
 - Callout types. ADR template. SPEC template.
-- Schema evolution via migrations.
-- Workflow: one phase at a time; wait for "done with Phase N".
+- Domain playbook in use (game client / server / web / backend / …).
+- Schema/feature evolution: introduce foundations early, let each feature phase add
+  its own, teaching real migration discipline rather than designing everything up
+  front. *(Adapt to the domain — a game course evolves scenes/assets, not tables.)*
+- Workflow: Roadmap approved first; then one phase at a time; wait for "done with
+  Phase N".
 
 ## F. Canonical names book (later phases MUST NOT contradict)
 - Repo name and directory layout.
