@@ -11,6 +11,7 @@ A curated plugin bundling skills for software development teams — from technic
 | `build-to-learn-systems` | `/build-to-learn-systems`, "I want to learn X by building it" | Author phase-by-phase engineering course documents |
 | `convert-documents-to-skill` | `/convert-documents-to-skill` | Convert any document into a ready-to-install Claude skill |
 | `convert-skills-into-plugin` | `/convert-skills-into-plugin` | Convert existing SKILL.md file(s) into an installable Claude Code / Cowork plugin |
+| `game-design-document` | `/game-design-document` | Build a comprehensive, non-technical Game Design Document from issue-tracker scope or pasted text |
 | `generate-mermaid-diagram` | `/generate-mermaid-diagram` | Generate valid Mermaid diagrams (flowchart, sequence, class, ER, graph, state) from code or a description |
 | `learn-new-skill` | "teach me X", "explain X", "ELI5", "walk me through" | Structured learning sessions for concepts and techniques |
 | `marketplace-plugin-scaffolder` | `/marketplace-plugin-scaffolder` | Scaffold a new Claude Code / Cowork marketplace plugin project from a set of skills |
