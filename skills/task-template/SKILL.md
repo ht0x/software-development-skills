@@ -3,8 +3,9 @@ name: task-template
 description: >-
   PRIMARY PURPOSE: produce a clear, ready-to-start task definition for a
   team member, agent, or yourself — clear enough to start, review, test,
-  and finish without guessing. Generates a filled-in task document. Works
-  across domains (web, backend, game, mobile, desktop). Trigger with
+  and finish without guessing, and readable by developers, QA and project
+  managers alike. Generates a filled-in task document. Works across
+  domains (web, backend, game, mobile, desktop). Trigger with
   "/task-template", "create a task for X", "write a task spec for...",
   "I need a ticket for...", "break this into a task doc", or whenever work
   needs to be handed off (to a teammate, an AI agent, or your future self)
@@ -16,7 +17,7 @@ disable-model-invocation: true
 
 # /task-template
 
-Generate a complete, filled-in task document for a specific piece of work — sized appropriately, ready to hand to a teammate, an agent, or yourself.
+Generate a complete, filled-in task document for a specific piece of work — sized appropriately, ready to hand to a teammate, an agent, or yourself, and understandable by everyone who touches the task: the developer who builds it, the QA engineer who checks it, and the project manager who tracks it.
 
 ## Usage
 
@@ -49,12 +50,55 @@ Each section below is labeled with how much it matters at each size:
 
 If the user invokes this skill for something that's clearly small (a one-line typo fix, a trivial config tweak), don't generate the full 19-section document — fill only the `Required for All` sections plus a short checklist, and say so. Offer to expand to the full document if they want it.
 
+## Core Idea: Write for Every Reader
+
+A task document is read by more people than the one who builds it. Write it so each of them can do their job without opening the code.
+
+| Reader | What they need from the task | Sections they read |
+| --- | --- | --- |
+| Project manager / lead | What changes for the user or player, why, how big, when | 1, 2, 4, 6 |
+| QA engineer / tester | Exactly how to check that it works, in a running build | 2, 7, 13, 15 |
+| Developer / AI agent | What to build, the limits, and where the technical plan lives | All, then the linked plan |
+
+**The task says *what* and *why*. The technical plan says *how*.** Implementation detail — class, method, file, folder, module or assembly names, code snippets, commit hashes, call graphs, lists of code defects found while investigating — belongs in a separate technical plan document (an analysis plan, a spec, a design doc) that the task links to in §12 and §18. It does not belong in the task.
+
+### Two zones
+
+| Zone | Sections | Rule |
+| --- | --- | --- |
+| **Plain-language zone** | 1–8, 13, 15 | Someone who has never opened the code must understand every line. No code, no class/method/file/folder/module names, no commit hashes. Asset or content names a designer would use are fine. |
+| **Implementer zone** | 9–12, 14, 16–19 | May name systems, features and modules, but stays at that level. Still no code and no file-by-file lists — link the technical plan instead. |
+
+### Writing rules
+
+1. **Describe what someone can observe, not how the code does it.**
+   - ✗ "Exactly one type calls `OnUpdate` on the content manager."
+   - ✓ "Pausing the game stops the character, the clock and every timer at the same moment."
+2. **Acceptance criteria are checkable in a running build** by someone who hasn't read the code: an action and the result they should see. Use "Given / When / Then" or a short play step.
+3. **Refactors and other no-visible-change work** say so in §2. Their main requirement is "behaves exactly as before", with a short regression list of what to check. State the structural goal in one plain sentence, not a list of types.
+4. **Cite design rules instead of restating them.** If the project has a design document with rule or acceptance IDs, quote the IDs in §1 and in each §7 requirement.
+5. **Use the project's own vocabulary** (its glossary or design terms) rather than code names.
+6. **One plain sentence plus a link** for any technical fact others must know — a risk, a blast radius, a dependency. The detail lives in the linked document.
+7. **Stay inside the length budget.** If a section grows past it, the detail belongs in the technical plan.
+
+### Length budget
+
+| Size | Whole task document (guideline) |
+| --- | --- |
+| Small | ≤ ~2,500 characters — about one screen |
+| Medium | ≤ ~6,000 characters |
+| Large | ≤ ~10,000 characters, with the rest in linked design or plan documents |
+
+### Project rules come first
+
+Before drafting, look for a project-level issue-writing guideline (for example a file linked from the repository's `CLAUDE.md` or `README`, such as `docs/tech/backlog-issue-guideline.md`). If one exists, read it and follow it: it decides project specifics such as title format, design-ID citation, glossary terms and extra Task Information fields. Where it is more specific than this skill, it wins.
+
 ## Workflow at a Glance
 
 ```
 1. Size      →  determine Small / Medium / Large FIRST — this gates step 2
 2. Elicit    →  ask only the question groups that size unlocks
-3. Draft     →  fill every applicable section using gathered context + reasonable inference
+3. Draft     →  fill every applicable section in the right zone, inside the length budget
 4. Flag      →  mark any field that's still genuinely unknown as a TODO, never invent specifics
 5. Deliver   →  ask output format (Markdown or DOCX), then generate and present the file
 ```
@@ -80,19 +124,21 @@ The size from Phase 1a determines which groups below to ask. Skip anything alrea
 
 **Always ask, regardless of size:**
 - What needs to be done, and why does it matter?
-- What does "done" look like?
-- Who is this for — a teammate, an AI coding agent, or yourself? Who owns it, who reviews it?
+- What does "done" look like — what will a user, player or tester see?
+- Who is this for — a teammate, an AI coding agent, or yourself? Who owns it, who reviews it, who tests it?
 - What kind of project is this (web, backend, game, mobile, desktop, library, other), and what language/framework/engine?
+- Is there a design document with rule or acceptance IDs this task should cite?
 - What test types are realistic here: unit/EditMode, integration/PlayMode/E2E, manual, review-only?
 
 **Small — stop after the "always ask" group.** Don't ask about background, dependencies, approval-sensitive areas, or risks unless the user's own description already signals one of these is relevant (e.g. they mention touching a shared schema even in a "small" fix — in that case, ask the relevant follow-up from the Medium/Large group below before proceeding).
 
 **Medium and Large — also ask:**
-- Current behavior, and what's wrong/missing/unclear about it?
-- Which existing files, modules, or systems does this touch?
+- Current behavior, and what's wrong/missing/unclear about it, as a user or player would notice it?
+- Which existing systems or features does this touch?
 - Anything explicitly out of scope that someone might accidentally touch?
 - Any required documents, decisions, or blocking tasks before work can start?
 - Does this touch a new dependency, architecture, save/data schema, shared API/contract, file move, or broad refactor? These typically need explicit approval before implementation.
+- Is there (or will there be) a technical plan document the task should link to?
 
 **Large only — also ask:**
 - Should this be split into implementation phases? If so, what's the natural breakpoint between phases?
@@ -104,7 +150,7 @@ Don't force every question if context already answers it. If the user pushes bac
 
 ## Phase 2 — Draft the Document
 
-Fill in every applicable section using gathered context. Where a domain-hint sub-bullet doesn't apply to the user's stack (e.g. "scene/prefab" hints for a backend-only task), drop it rather than leaving it as dead placeholder text. Where information is genuinely unknown and the user declined to clarify, write `TODO: [what's needed]` rather than inventing plausible-sounding specifics.
+Fill in every applicable section using gathered context, following **Write for Every Reader**: plain language in sections 1–8, 13 and 15; system-level only in the rest; technical detail linked, not pasted. Where a domain-hint sub-bullet doesn't apply to the user's stack (e.g. "scene/prefab" hints for a backend-only task), drop it rather than leaving it as dead placeholder text. Where information is genuinely unknown and the user declined to clarify, write `TODO: [what's needed]` rather than inventing plausible-sounding specifics.
 
 For a **small** task, use only the sections marked `Required for All`, condensed, plus a short checklist in place of Implementation Plan / Review Plan. For **medium/large** tasks, fill the full document below.
 
@@ -118,8 +164,10 @@ For a **small** task, use only the sections marked `Required for All`, condensed
 | Field | Value |
 | --- | --- |
 | Task ID | `[task-id]` |
-| Task Title | `[short action-focused title]` |
-| Feature or Area | `[feature/module/system]` |
+| Task Title | `[short action-focused title, in user/player terms]` |
+| Feature or Area | `[feature or system, by its product name]` |
+| Design Reference | `[design rule / acceptance IDs this task delivers, or None]` |
+| Platforms | `[platforms this must work on, or All]` |
 | Owner | `[name or agent]` |
 | Reviewer | `[name or role]` |
 | Created Date | `[YYYY-MM-DD]` |
@@ -130,7 +178,7 @@ For a **small** task, use only the sections marked `Required for All`, condensed
 
 ## 2. Summary — Required for All
 
-Describe the task in one short paragraph: what needs to be done, why it matters, what result should exist when finished.
+At most three sentences: what will be different when this is done, for whom, and why it matters. Write it so a project manager could repeat it in a meeting. For work with no visible change (refactor, tooling), say so plainly.
 
 ```text
 [Task summary]
@@ -138,13 +186,16 @@ Describe the task in one short paragraph: what needs to be done, why it matters,
 
 ## 3. Background — Recommended for Medium/Large
 
-- Current behavior or state: `[what happens today]`
-- Problem or missing part: `[what is wrong, unclear, missing, or incomplete]`
+- Current behavior or state: `[what a user, player or tester sees today]`
+- Problem or missing part: `[what is wrong, unclear, missing, or incomplete — as it shows up, not where it is in the code]`
 - User, player, customer, developer, or system impact: `[who or what is affected]`
+- Technical root cause, if relevant: `[one plain sentence + link to the technical plan]`
 
 For small tasks, one sentence is enough.
 
 ## 4. Goals — Required for All
+
+Outcomes, not implementation steps.
 
 - `[Goal 1]`
 - `[Goal 2]`
@@ -155,9 +206,11 @@ For small tasks, one sentence is enough.
 - `[Non-goal 1]`
 - `[Non-goal 2]`
 
-For small tasks, use this only when there's real risk of someone changing unrelated files or behavior.
+For small tasks, use this only when there's real risk of someone changing unrelated behavior.
 
 ## 6. Scope — Required for All
+
+Scope is described as features and behaviors, not files.
 
 ### 6.1 In Scope
 - `[In-scope item]`
@@ -171,76 +224,85 @@ For small tasks, this can be a short bullet list. For medium/large, separate in-
 
 ## 7. Requirements — Required for All
 
-Use "Must" for required behavior, "Should" for expected behavior, "Could" for optional behavior.
+Use "Must" for required behavior, "Should" for expected behavior, "Could" for optional behavior. Each requirement describes observable behavior and cites its design rule ID when one exists. Each acceptance criterion is something a tester can do in a running build and the result they should see.
 
-| ID | Requirement | Priority | Acceptance Criteria |
+| ID | Requirement | Priority | Acceptance Criteria (how to verify in a build) |
 | --- | --- | --- | --- |
-| `REQ-001` | `[required behavior]` | `Must / Should / Could` | `[how to verify]` |
-| `REQ-002` | `[required behavior]` | `Must / Should / Could` | `[how to verify]` |
+| `REQ-001` | `[observable behavior] ([design ID])` | `Must / Should / Could` | `[action → expected result]` |
+| `REQ-002` | `[observable behavior] ([design ID])` | `Must / Should / Could` | `[action → expected result]` |
 
 For small tasks, 1-3 bullet requirements are enough if a table feels too heavy.
 
 ## 8. Expected Deliverables — Required for All
 
-- Code changes: `[Yes / No, details]`
-- Tests: `[Yes / No, details]`
-- Documentation: `[Yes / No, details]`
+Name each deliverable by what it is, not by its file path.
+
+- Code changes: `[Yes / No, what it delivers]`
+- Tests: `[Yes / No, what they check]`
+- Documentation: `[Yes / No, which documents]`
 - Asset, schema, config, or data changes: `[Yes / No, details]`
-  - For web/backend: migration files, API schema, config files
-  - For game: scenes, prefabs, ScriptableObjects, level data
+  - For web/backend: migrations, API schema, configuration
+  - For game: scenes, prefabs, game data, level data, art assets
   - For mobile/desktop: platform-specific resources, manifests
-- Review report or task process report: `[Yes / No, path]`
+- Review report or task process report: `[Yes / No]`
 
 ## 9. Affected Areas — Required for Medium/Large
 
-List files, folders, systems, or assets likely to be touched.
+Systems, features or content areas — not individual files. File-level detail goes in the technical plan.
 
-| Area | Path or Name | Expected Change |
+| Area | System / Feature / Asset | Expected Change |
 | --- | --- | --- |
-| `[system/module]` | `[path or name]` | `Add / Modify / Remove / Unknown` |
-| `[system/module]` | `[path or name]` | `Add / Modify / Remove / Unknown` |
+| `[area]` | `[system, feature or asset name]` | `Add / Modify / Remove / Unknown` |
+| `[area]` | `[system, feature or asset name]` | `Add / Modify / Remove / Unknown` |
 
-For small tasks, include this only if the task depends on a specific file, asset, config, or decision.
+For small tasks, include this only if the task depends on a specific system, asset, config, or decision.
 
 ## 10. Dependencies and Inputs — Recommended for Medium/Large
 
-- Required documents: `[paths or None]`
-- Required assets or data: `[paths/names or None]`
-- Required decisions: `[decision needed or None]`
+- Required documents: `[document names or None]`
+- Required assets or data: `[names or None]`
+- Required decisions: `[open question or decision needed, or None]`
 - Blocking tasks: `[task IDs or None]`
 - External tools, packages, or services: `[details or None]`
 
 ## 11. Approval-Sensitive Changes — Required for Medium/Large
 
+One plain line per "Yes"; link the decision record or technical plan for detail.
+
 | Area | Needed? | Notes |
 | --- | --- | --- |
-| New package, dependency, or plugin | `Yes / No` | `[notes]` |
-| Architecture or ADR change | `Yes / No` | `[notes]` |
-| Data schema, persistence, save data, or migration | `Yes / No` | `[notes]` |
-| Shared contracts, networking, or public API | `Yes / No` | `[notes]` |
-| File or folder move | `Yes / No` | `[notes]` |
-| Large refactor outside local task scope | `Yes / No` | `[notes]` |
+| New package, dependency, or plugin | `Yes / No` | `[one line]` |
+| Architecture or ADR change | `Yes / No` | `[one line + link]` |
+| Data schema, persistence, save data, or migration | `Yes / No` | `[one line]` |
+| Shared contracts, networking, or public API | `Yes / No` | `[one line]` |
+| File or folder move | `Yes / No` | `[one line]` |
+| Large refactor outside local task scope | `Yes / No` | `[one line]` |
 
 For small tasks, use this section only if the task may touch dependencies, architecture, data/persistence, shared contracts, networking, file moves, or broad refactors.
 
 ## 12. Implementation Plan — Required for Medium/Large
 
+At most six steps, each an outcome someone could check. The detailed technical plan lives in its own document — link it below the table.
+
 | Step | Work | Owner | Done When | Status |
 | --- | --- | --- | --- | --- |
-| `1` | `[investigate current behavior]` | `[name]` | `[done condition]` | `Todo / Doing / Done` |
-| `2` | `[implement change]` | `[name]` | `[done condition]` | `Todo / Doing / Done` |
+| `1` | `[outcome]` | `[name]` | `[observable done condition / REQ IDs]` | `Todo / Doing / Done` |
+| `2` | `[outcome]` | `[name]` | `[observable done condition / REQ IDs]` | `Todo / Doing / Done` |
 | `3` | `[add or update tests]` | `[name]` | `[done condition]` | `Todo / Doing / Done` |
 | `4` | `[update docs or reports]` | `[name]` | `[done condition]` | `Todo / Doing / Done` |
-| `5` | `[review and fix findings]` | `[name]` | `[done condition]` | `Todo / Doing / Done` |
+
+Technical plan: `[link or path, or TODO]`
 
 For small tasks, a short checklist is enough.
 
 ## 13. Testing Plan — Required for All
 
-| Test ID | Test Type | Target | Expected Result | Status |
-| --- | --- | --- | --- | --- |
-| `TEST-001` | `[Unit/EditMode, Integration/PlayMode, E2E, Manual, Review]` | `[target]` | `[expected result]` | `Todo / Done / Not Required` |
-| `TEST-002` | `[Unit/EditMode, Integration/PlayMode, E2E, Manual, Review]` | `[target]` | `[expected result]` | `Todo / Done / Not Required` |
+| Test ID | Test Type | Target | Steps | Expected Result | Status |
+| --- | --- | --- | --- | --- | --- |
+| `TEST-001` | `[Unit/EditMode, Integration/PlayMode, E2E, Manual, Review]` | `[behavior or REQ ID]` | `[what to do]` | `[what should happen]` | `Todo / Done / Not Required` |
+| `TEST-002` | `[Unit/EditMode, Integration/PlayMode, E2E, Manual, Review]` | `[behavior or REQ ID]` | `[what to do]` | `[what should happen]` | `Todo / Done / Not Required` |
+
+Manual tests are written so a tester can follow them without reading code. Automated tests name the behavior they check, not the test class.
 
 Recommended checks (apply the ones relevant to the stack):
 - Read any project-specific testing guideline doc, if one exists, before writing tests.
@@ -253,7 +315,7 @@ For small tasks, write only the manual check or test command needed to confirm t
 ## 14. Review Plan — Required for Medium/Large
 
 - Review type: `Code / Design / Documentation / Manual QA / Full task review`
-- Review guideline: `[path or None]`
+- Review guideline: `[document name or None]`
 - Reviewer focus:
   - `[focus area 1]`
   - `[focus area 2]`
@@ -264,6 +326,7 @@ For small tasks, this can be replaced by the Definition of Done checklist below.
 ## 15. Definition of Done — Required for All
 
 - Requirements are implemented or explicitly deferred.
+- The acceptance criteria in §7, and any design acceptance IDs cited in §1, pass in a running build.
 - In-scope deliverables are complete.
 - Out-of-scope items were not added silently.
 - Tests and manual checks are completed or documented as not required.
@@ -276,7 +339,7 @@ For small tasks, this can be replaced by the Definition of Done checklist below.
 
 | Risk | Impact | Mitigation |
 | --- | --- | --- |
-| `[risk]` | `Low / Medium / High` | `[how to reduce or handle the risk]` |
+| `[risk, in one plain sentence]` | `Low / Medium / High` | `[how to reduce or handle the risk]` |
 
 For small tasks, use this only when there's uncertainty that could change the solution.
 
@@ -290,14 +353,17 @@ For small tasks, use this only when there's uncertainty that could change the so
 
 | Document | Path or Link | Status |
 | --- | --- | --- |
+| Design document (e.g. GDD, product spec) | `[path or Not Required]` | `Draft / Approved / Not Required` |
 | System Requirements Specification | `[path or Not Required]` | `Draft / Approved / Not Required` |
 | Software Design Document | `[path or Not Required]` | `Draft / Approved / Not Required` |
-| Spec-Driven Development Plan | `[path or Not Required]` | `Draft / In Progress / Not Required` |
+| Technical plan / Spec-Driven Development Plan | `[path or Not Required]` | `Draft / In Progress / Not Required` |
 | Task Process Report | `[path or Not Required]` | `In Progress / Completed / Not Required` |
 
 For small tasks, include only direct links to references if needed.
 
 ## 19. Progress Log — Optional
+
+Plain language: what now works, what's next, what's blocked.
 
 | Date | Update | Blockers or Decisions |
 | --- | --- | --- |
@@ -309,6 +375,8 @@ For small tasks, include only direct links to references if needed.
 ## Phase 3 — Flag Gaps Honestly
 
 Before presenting the draft, scan it for any field filled with a guess rather than something the user actually stated or that's clearly inferable from context (e.g. an assumed file path, an assumed test framework). Convert genuine guesses into `TODO:` markers instead of presenting them as settled facts. Light structural inference is fine (e.g. inferring "this needs an integration test" from "touches two systems") — the line is between reasonable inference and invented specifics like fake paths, fictional existing systems, or made-up reviewers.
+
+Then read sections 1–8, 13 and 15 as if you were a tester who has never seen the code. Rewrite any line that only makes sense to the person who built it.
 
 ---
 
@@ -331,8 +399,13 @@ Keep the chat response brief: a short note on the chosen size and what's flagged
 
 Before presenting the document, verify:
 - [ ] Task size was determined and the right amount of detail was filled in for that size
+- [ ] Sections 1–8, 13 and 15 contain no code, no class/method/file/folder/module names and no commit hashes
+- [ ] A tester who has never seen the code could follow every acceptance criterion and manual test step
+- [ ] Every requirement cites its design rule ID when the project has a design document
+- [ ] The document is inside the length budget for its size; technical detail is linked, not pasted
 - [ ] Every applicable section has either real content or an explicit `TODO:` — nothing is silently invented
 - [ ] Domain-hint sub-bullets that don't apply to this stack have been removed, not left as dead placeholders
 - [ ] No external doc paths or process references are hardcoded from a different project than the user's
+- [ ] Any project-level issue-writing guideline was read and followed
 - [ ] Test plan matches what the user said is realistically testable for their stack
-- [ ] Document is internally consistent (paths/owners referenced in one section match elsewhere)
+- [ ] Document is internally consistent (names and owners referenced in one section match elsewhere)
