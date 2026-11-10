@@ -85,9 +85,9 @@ A task document is read by more people than the one who builds it. Write it so e
 
 | Size | Whole task document (guideline) |
 | --- | --- |
-| Small | ≤ ~2,500 characters — about one screen |
-| Medium | ≤ ~6,000 characters |
-| Large | ≤ ~10,000 characters, with the rest in linked design or plan documents |
+| Small | ≤ ~4,500 characters — about a screen or two |
+| Medium | ≤ ~8,000 characters |
+| Large | ≤ ~12,000 characters, with the rest in linked design or plan documents |
 
 ### Project rules come first
 
